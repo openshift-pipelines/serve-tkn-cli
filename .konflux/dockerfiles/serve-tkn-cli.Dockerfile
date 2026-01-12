@@ -11,20 +11,34 @@ COPY sources ./
 ARG ARCHS="amd64 arm64 ppc64le s390x"
 ARG BUILD_DIR=$WORKDIR/build
 
-#Build Binaries for All Supported Archs
+#Build TKN Binaries for All Supported Archs
 RUN cd cli; \
     for arch in $ARCHS; do \
-      echo "▶ Building for linux/$arch"; \
+      echo "▶ Building tkn for linux/$arch"; \
       GOOS=linux GOARCH=$arch CGO_ENABLED=0 \
       go build -o $BUILD_DIR/linux-$arch/tkn ./cmd/tkn; \
     done;
 
+#Build OPC Binaries for All Supported Archs
+RUN cd opc; \
+    for arch in $ARCHS; do \
+      echo "▶ Building opc for linux/$arch"; \
+      GOOS=linux GOARCH=$arch CGO_ENABLED=0 \
+      go build -o $BUILD_DIR/linux-$arch/opc .; \
+    done;
+
+#Copy tkn as tkn-pac (same binary)
+RUN for arch in $ARCHS; do \
+      cp $BUILD_DIR/linux-$arch/tkn $BUILD_DIR/linux-$arch/tkn-pac; \
+    done;
+
 #Package All binaries in respective archives
-RUN mkdir dist ; cd dist ; \
+RUN mkdir dist ; \
     for arch in $ARCHS; do \
       echo "▶ Packaging for linux/$arch"; \
       chmod +x $BUILD_DIR/linux-$arch/*; \
-      tar -czvf tkn-linux-$arch.tar.gz $BUILD_DIR/linux-$arch; \
+      cd $BUILD_DIR/linux-$arch && \
+      tar -czvf $WORKDIR/dist/tkn-linux-$arch.tar.gz tkn tkn-pac opc; \
     done;
 
 FROM $RUNTIME
