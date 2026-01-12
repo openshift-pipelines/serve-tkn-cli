@@ -2,3 +2,7 @@
 	path = sources/cli
 	url = https://github.com/tektoncd/cli.git
 	branch = main
+[submodule "sources/opc"]
+	path = sources/opc
+	url = https://github.com/openshift-pipelines/opc.git
+	branch = release-v1.21.x
