@@ -1,45 +1,37 @@
+ARG TKN_BUILDER=quay.io/redhat-user-workloads/tekton-ecosystem-tenant/pipelines-tkn-rhel9:next
+ARG OPC_BUILDER=quay.io/redhat-user-workloads/tekton-ecosystem-tenant/pipelines-opc-rhel9:next
+ARG TKN_PAC_BUILDER=quay.io/redhat-user-workloads/tekton-ecosystem-tenant/pipelines-tkn-pac-rhel9:next
 ARG BUILDER=registry.access.redhat.com/ubi9/go-toolset:1.25
-ARG RUNTIME=registry.access.redhat.com/ubi9/ubi-minimal:latest@sha256:6fc28bcb6776e387d7a35a2056d9d2b985dc4e26031e98a2bd35a7137cd6fd71
+ARG RUNTIME=registry.access.redhat.com/ubi9/httpd-24@sha256:29382518403a4361c48fccc057163dc4a9f43ee159432754fa63c76485b223f5
 
 
+FROM $TKN_BUILDER AS  tkn
+FROM $OPC_BUILDER AS  opc
+FROM $TKN_PAC_BUILDER AS  tkn-pac
 FROM $BUILDER AS builder
-
 ARG WORKDIR=/go/src/github.com/openshift-pipelines/serve-tkn-cli
 WORKDIR $WORKDIR
 
-COPY sources ./
+#Package All binaries in respective archives
 ARG ARCHS="amd64 arm64 ppc64le s390x"
 ARG BUILD_DIR=$WORKDIR/build
 
-#Build TKN Binaries for All Supported Archs
-RUN cd cli; \
-    for arch in $ARCHS; do \
-      echo "▶ Building tkn for linux/$arch"; \
-      GOOS=linux GOARCH=$arch CGO_ENABLED=0 \
-      go build -o $BUILD_DIR/linux-$arch/tkn ./cmd/tkn; \
-    done;
+COPY --from=tkn /go/src/github.com/openshift-pipelines/serve-tkn-cli/build $BUILD_DIR
+COPY --from=opc /go/src/github.com/openshift-pipelines/serve-tkn-cli/build $BUILD_DIR
+COPY --from=tkn-pac /go/src/github.com/openshift-pipelines/serve-tkn-cli/build $BUILD_DIR
 
-#Build OPC Binaries for All Supported Archs
-RUN cd opc; \
-    for arch in $ARCHS; do \
-      echo "▶ Building opc for linux/$arch"; \
-      GOOS=linux GOARCH=$arch CGO_ENABLED=0 \
-      go build -o $BUILD_DIR/linux-$arch/opc .; \
-    done;
 
-#Copy tkn as tkn-pac (same binary)
-RUN for arch in $ARCHS; do \
-      cp $BUILD_DIR/linux-$arch/tkn $BUILD_DIR/linux-$arch/tkn-pac; \
-    done;
+RUN ls -rlt $BUILD_DIR/
 
-#Package All binaries in respective archives
+#
 RUN mkdir dist ; \
     for arch in $ARCHS; do \
       echo "▶ Packaging for linux/$arch"; \
       chmod +x $BUILD_DIR/linux-$arch/*; \
-      cd $BUILD_DIR/linux-$arch && \
-      tar -czvf $WORKDIR/dist/tkn-linux-$arch.tar.gz tkn tkn-pac opc; \
+      cd $BUILD_DIR/linux-$arch;  \
+      tar -czvf $WORKDIR/dist/tkn-linux-$arch.tar.gz .; \
     done;
+
 
 FROM $RUNTIME
 
