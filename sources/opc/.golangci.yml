@@ -1,0 +1,66 @@
+version: "2"
+run:
+  build-tags:
+    - e2e
+linters:
+  enable:
+    - asciicheck
+    - bodyclose
+    - copyloopvar
+    - dogsled
+    - dupl
+    - durationcheck
+    - errorlint
+    - exhaustive
+    - forbidigo
+    - forcetypeassert
+    - gochecknoinits
+    - gocritic
+    - goheader
+    - gomodguard
+    - goprintffuncname
+    - gosec
+    - importas
+    - makezero
+    - misspell
+    - nakedret
+    - nilerr
+    - noctx
+    - prealloc
+    - predeclared
+    - promlinter
+    - revive
+    - staticcheck
+    - tparallel
+    - unparam
+    - whitespace
+  settings:
+    gocritic:
+      disabled-checks:
+        - unlambda
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    paths:
+      - vendor
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  enable:
+    - gofumpt
+    - goimports
+  settings:
+    gofumpt:
+      extra-rules: true
+  exclusions:
+    generated: lax
+    paths:
+      - vendor
+      - third_party$
+      - builtin$
+      - examples$

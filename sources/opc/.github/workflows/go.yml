@@ -1,0 +1,66 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ main, 'release-v**' ]
+  pull_request:
+    branches: [ main, 'release-v**' ]
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/.cache/pip
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Check out code
+        uses: actions/checkout@v6
+
+      - uses: alexellis/setup-arkade@v3
+      - uses: alexellis/arkade-get@master
+        with:
+          golangci-lint: latest
+
+      - name: Lint Go Code
+        run: |
+          make lint-go
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/.cache/pip
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Check out code
+        uses: actions/checkout@v6
+
+      - name: Build binary, making sure it does compile
+        run: |
+          make build
+
