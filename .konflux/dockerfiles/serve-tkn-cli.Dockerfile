@@ -15,16 +15,16 @@ ARG BUILD_DIR=$WORKDIR/build
 RUN cd cli; \
     for arch in $ARCHS; do \
       echo "▶ Building tkn for linux/$arch"; \
-      GOOS=linux GOARCH=$arch CGO_ENABLED=0 \
-      go build -o $BUILD_DIR/linux-$arch/tkn ./cmd/tkn; \
+      GOOS=linux GOARCH=$arch CGO_ENABLED=0 GOCACHE=$WORKDIR/.cache/go-build  \
+      go build -mod=vendor -o $BUILD_DIR/linux-$arch/tkn ./cmd/tkn; \
     done;
 
 #Build OPC Binaries for All Supported Archs
 RUN cd opc; \
     for arch in $ARCHS; do \
       echo "▶ Building opc for linux/$arch"; \
-      GOOS=linux GOARCH=$arch CGO_ENABLED=0 \
-      go build -o $BUILD_DIR/linux-$arch/opc .; \
+      GOOS=linux GOARCH=$arch CGO_ENABLED=0 GOCACHE=$WORKDIR/.cache/go-build \
+      go build -mod=vendor -o $BUILD_DIR/linux-$arch/opc .; \
     done;
 
 #Build tkn-pac Binaries for All Supported Archs
@@ -41,7 +41,7 @@ RUN mkdir dist ; \
       echo "▶ Packaging for linux/$arch"; \
       chmod +x $BUILD_DIR/linux-$arch/*; \
       cd $BUILD_DIR/linux-$arch && \
-      tar -czvf $WORKDIR/dist/tkn-linux-$arch.tar.gz tkn tkn-pac opc; \
+      tar -czvf $WORKDIR/dist/tkn-linux-$arch.tar.gz .; \
     done;
 
 FROM $RUNTIME
