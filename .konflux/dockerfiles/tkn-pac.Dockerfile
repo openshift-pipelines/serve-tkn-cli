@@ -17,3 +17,15 @@ RUN for arch in $ARCHS; do \
       GOOS=linux GOARCH=$arch CGO_ENABLED=0 \
       go build -o $BUILD_DIR/linux-$arch/tkn-pac ./cmd/tkn; \
     done;
+LABEL \
+      com.redhat.component="openshift-pipelines-serve-tkn-cli-container" \
+      name="openshift-pipelines/pipelines-serve-tkn-cli-rhel9" \
+      version="5.0.5-482" \
+      summary="Red Hat OpenShift pipelines serves tkn CLI binaries" \
+      maintainer="pipelines-extcomm@redhat.com" \
+      description="Serves tkn CLI binaries from server" \
+      io.k8s.display-name="Red Hat OpenShift Pipelines tkn CLI serve" \
+      io.k8s.description="Red Hat OpenShift Pipelines tkn CLI serve" \
+      io.openshift.tags="pipelines,tekton,openshift" \
+      vendor="Red Hat, Inc." \
+      distribution-scope="public"
