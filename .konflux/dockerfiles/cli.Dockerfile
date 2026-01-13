@@ -2,7 +2,7 @@ ARG TKN_BUILDER=quay.io/redhat-user-workloads/tekton-ecosystem-tenant/pipelines-
 ARG OPC_BUILDER=quay.io/redhat-user-workloads/tekton-ecosystem-tenant/pipelines-opc-rhel9:next
 ARG TKN_PAC_BUILDER=quay.io/redhat-user-workloads/tekton-ecosystem-tenant/pipelines-tkn-pac-rhel9:next
 ARG BUILDER=registry.access.redhat.com/ubi9/go-toolset:1.25
-ARG RUNTIME=registry.access.redhat.com/ubi9/httpd-24@sha256:29382518403a4361c48fccc057163dc4a9f43ee159432754fa63c76485b223f5
+ARG RUNTIME=registry.access.redhat.com/ubi9/httpd-24@sha256:58b583bb82da64c3c962ed2ca5e60dfff0fc93e50a9ec95e650cecb3a6cb8fda
 
 
 FROM $TKN_BUILDER AS  tkn
