@@ -7,7 +7,7 @@ FROM $BUILDER AS builder
 ARG WORKDIR=/go/src/github.com/openshift-pipelines/serve-tkn-cli
 WORKDIR $WORKDIR
 
-COPY sources/cli ./
+COPY sources/pac ./
 ARG ARCHS="amd64 arm64 ppc64le s390x"
 ARG BUILD_DIR=$WORKDIR/build
 
@@ -15,17 +15,20 @@ ARG BUILD_DIR=$WORKDIR/build
 RUN for arch in $ARCHS; do \
       echo "▶ Building tkn-pac for linux/$arch"; \
       GOOS=linux GOARCH=$arch CGO_ENABLED=0 \
-      go build -o $BUILD_DIR/linux-$arch/tkn-pac ./cmd/tkn; \
+      go build -o $BUILD_DIR/linux-$arch/tkn-pac ./cmd/tkn-pac; \
     done;
+
 LABEL \
-      com.redhat.component="openshift-pipelines-serve-tkn-cli-container" \
-      name="openshift-pipelines/pipelines-serve-tkn-cli-rhel9" \
-      version="5.0.5-482" \
-      summary="Red Hat OpenShift pipelines serves tkn CLI binaries" \
+      com.redhat.component="openshift-pipelines-cli-tkn-pac-container" \
+      name="openshift-pipelines/pipelines-cli-tkn-pac-rhel9" \
+      version=$VERSION  \
+      summary="Red Hat OpenShift pipelines tkn pac CLI" \
       maintainer="pipelines-extcomm@redhat.com" \
-      description="Serves tkn CLI binaries from server" \
-      io.k8s.display-name="Red Hat OpenShift Pipelines tkn CLI serve" \
-      io.k8s.description="Red Hat OpenShift Pipelines tkn CLI serve" \
+      description="CLI client 'tkn-pac' for managing openshift pipelines" \
+      io.k8s.display-name="Red Hat OpenShift Pipelines tkn pac CLI" \
+      io.k8s.description="Red Hat OpenShift Pipelines tkn pac CLI" \
       io.openshift.tags="pipelines,tekton,openshift" \
       vendor="Red Hat, Inc." \
       distribution-scope="public"
+
+
