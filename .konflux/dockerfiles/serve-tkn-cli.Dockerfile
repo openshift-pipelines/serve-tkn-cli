@@ -1,15 +1,18 @@
-ARG BUILDER=registry.access.redhat.com/ubi9/go-toolset:1.25
-ARG RUNTIME=registry.access.redhat.com/ubi9/httpd-24@sha256:58b583bb82da64c3c962ed2ca5e60dfff0fc93e50a9ec95e650cecb3a6cb8fda
+ARG BUILDER=registry.access.redhat.com/ubi9/go-toolset:1.25@sha256:38d909b4f0b5244bc6dffab499fa3324e2ce878dcc79e3ee85a200655cbba736
+ARG RUNTIME=registry.access.redhat.com/ubi9/httpd-24:latest@sha256:58b583bb82da64c3c962ed2ca5e60dfff0fc93e50a9ec95e650cecb3a6cb8fda
 
+ARG VERSION=5.0.5
+ARG WORKDIR=/go/src/github.com/openshift-pipelines/serve-tkn-cli
+ARG BUILD_DIR=$WORKDIR/build
 
 FROM $BUILDER AS builder
+ARG WORKDIR
+ARG BUILD_DIR
 
-ARG WORKDIR=/go/src/github.com/openshift-pipelines/serve-tkn-cli
 WORKDIR $WORKDIR
 
 COPY sources ./
 ARG ARCHS="amd64 arm64 ppc64le s390x"
-ARG BUILD_DIR=$WORKDIR/build
 
 #Build TKN Binaries for All Supported Archs
 RUN cd cli; \
@@ -46,13 +49,16 @@ RUN mkdir dist ; \
 
 FROM $RUNTIME
 
+ARG VERSION
+ARG BUILD_DIR
+
 RUN mkdir -p /var/www/html/tkn
 COPY --from=builder /go/src/github.com/openshift-pipelines/serve-tkn-cli/dist/* /var/www/html/tkn/
 
 LABEL \
       com.redhat.component="openshift-pipelines-serve-tkn-cli-container" \
       name="openshift-pipelines/pipelines-serve-tkn-cli-rhel9" \
-      version="5.0.5-482" \
+      version="$VERSION" \
       summary="Red Hat OpenShift pipelines serves tkn CLI binaries" \
       maintainer="pipelines-extcomm@redhat.com" \
       description="Serves tkn CLI binaries from server" \
