@@ -6,3 +6,7 @@
 	path = sources/opc
 	url = https://github.com/openshift-pipelines/opc.git
 	branch = release-v1.21.x
+[submodule "sources/pac"]
+	path = sources/pac
+	url = https://github.com/openshift-pipelines/pipelines-as-code.git
+	branch = release-v0.40.x

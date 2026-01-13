@@ -27,9 +27,12 @@ RUN cd opc; \
       go build -o $BUILD_DIR/linux-$arch/opc .; \
     done;
 
-#Copy tkn as tkn-pac (same binary)
-RUN for arch in $ARCHS; do \
-      cp $BUILD_DIR/linux-$arch/tkn $BUILD_DIR/linux-$arch/tkn-pac; \
+#Build tkn-pac Binaries for All Supported Archs
+RUN cd pac; \
+    for arch in $ARCHS; do \
+      echo "▶ Building tkn-pac for linux/$arch"; \
+      GOOS=linux GOARCH=$arch CGO_ENABLED=0 \
+      go build -o $BUILD_DIR/linux-$arch/tkn-pac ./cmd/tkn-pac; \
     done;
 
 #Package All binaries in respective archives
@@ -60,3 +63,4 @@ LABEL \
       distribution-scope="public"
 
 CMD ["run-httpd"]
+

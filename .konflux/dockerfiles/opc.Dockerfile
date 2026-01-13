@@ -18,8 +18,8 @@ RUN for arch in $ARCHS; do \
       go build -o $BUILD_DIR/linux-$arch/opc .; \
     done;
 LABEL \
-      com.redhat.component="openshift-pipelines-serve-tkn-cli-container" \
-      name="openshift-pipelines/pipelines-serve-tkn-cli-rhel9" \
+      com.redhat.component="openshift-pipelines-opc-container" \
+      name="openshift-pipelines/pipelines-opc-rhel9" \
       version="5.0.5-482" \
       summary="Red Hat OpenShift pipelines serves tkn CLI binaries" \
       maintainer="pipelines-extcomm@redhat.com" \
