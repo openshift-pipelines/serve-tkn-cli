@@ -11,15 +11,15 @@ metadata:
     build.appstudio.redhat.com/target_branch: '{{target_branch}}'
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: event == "pull_request" && target_branch
-      == "next" &&
+      == "release-v1.15.x" &&
       ("***".pathChanged() ||
       ".konflux/dockerfiles/serve-tkn-cli.Dockerfile".pathChanged() ||
-      ".tekton/serve-tkn-cli-next-serve-tkn-cli-pull-request.yaml".pathChanged())
+      ".tekton/serve-tkn-cli-1-15-serve-tkn-cli-pull-request.yaml".pathChanged())
   labels:
-    appstudio.openshift.io/application: openshift-pipelines-cli-next
-    appstudio.openshift.io/component: serve-tkn-cli-next-serve-tkn-cli
+    appstudio.openshift.io/application: openshift-pipelines-cli-1-15
+    appstudio.openshift.io/component: serve-tkn-cli-1-15-serve-tkn-cli
     pipelines.appstudio.openshift.io/type: build
-  name: serve-tkn-cli-next-serve-tkn-cli-on-pull-request
+  name: serve-tkn-cli-1-15-serve-tkn-cli-on-pull-request
   namespace: tekton-ecosystem-tenant
 spec:
   params:
@@ -30,14 +30,14 @@ spec:
   - name: revision
     value: '{{revision}}'
   - name: output-image
-    value: quay.io/redhat-user-workloads/tekton-ecosystem-tenant/pipelines-serve-tkn-cli-rhel9:on-pr-{{revision}}
+    value: quay.io/redhat-user-workloads/tekton-ecosystem-tenant/pipelines-serve-tkn-cli-rhel8:on-pr-{{revision}}
   - name: image-expires-after
     value: 5d
   - name: dockerfile
     value: .konflux/dockerfiles/serve-tkn-cli.Dockerfile
   - name: additional-tags
     value:
-      - "on-pr-next"
+      - "on-pr-1.15.4"
   - name: build-platforms
     value:
     - linux/x86_64
@@ -47,7 +47,7 @@ spec:
   pipelineRef:
     name: docker-build-ta
   taskRunTemplate:
-    serviceAccountName: build-pipeline-serve-tkn-cli-next-serve-tkn-cli
+    serviceAccountName: build-pipeline-serve-tkn-cli-1-15-serve-tkn-cli
   workspaces:
   - name: git-auth
     secret:
