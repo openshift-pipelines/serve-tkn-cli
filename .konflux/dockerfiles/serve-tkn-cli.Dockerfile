@@ -22,16 +22,19 @@ RUN cd cli; \
       echo "▶ Building tkn for linux/$arch"; \
       GOOS=linux GOARCH=$arch GOCACHE=$WORKDIR/.cache/go-build \
       go build -tags strictfipsruntime -mod=vendor -o $BUILD_DIR/linux-$arch/tkn ./cmd/tkn; \
+      go clean -cache -modcache; \
     done; \
     for arch in $DARWIN_ARCHS; do \
       echo "▶ Building tkn for darwin/$arch"; \
       GOOS=darwin GOARCH=$arch GOCACHE=$WORKDIR/.cache/go-build \
       go build -tags strictfipsruntime -mod=vendor -o $BUILD_DIR/darwin-$arch/tkn ./cmd/tkn; \
+      go clean -cache -modcache; \
     done; \
     for arch in $WINDOWS_ARCHS; do \
       echo "▶ Building tkn for windows/$arch"; \
       GOOS=windows GOARCH=$arch GOCACHE=$WORKDIR/.cache/go-build \
       go build -tags strictfipsruntime -mod=vendor -o $BUILD_DIR/windows-$arch/tkn.exe ./cmd/tkn; \
+      go clean -cache -modcache; \
     done;
 
 # Build OPC binaries for all platforms
@@ -40,16 +43,19 @@ RUN cd opc; \
       echo "▶ Building opc for linux/$arch"; \
       GOOS=linux GOARCH=$arch GOCACHE=$WORKDIR/.cache/go-build \
       go build -tags strictfipsruntime -mod=vendor -o $BUILD_DIR/linux-$arch/opc .; \
+      go clean -cache -modcache; \
     done; \
     for arch in $DARWIN_ARCHS; do \
       echo "▶ Building opc for darwin/$arch"; \
       GOOS=darwin GOARCH=$arch GOCACHE=$WORKDIR/.cache/go-build \
       go build -tags strictfipsruntime -mod=vendor -o $BUILD_DIR/darwin-$arch/opc .; \
+      go clean -cache -modcache; \
     done; \
     for arch in $WINDOWS_ARCHS; do \
       echo "▶ Building opc for windows/$arch"; \
       GOOS=windows GOARCH=$arch GOCACHE=$WORKDIR/.cache/go-build \
       go build -tags strictfipsruntime -mod=vendor -o $BUILD_DIR/windows-$arch/opc.exe .; \
+      go clean -cache -modcache; \
     done;
 
 # Build tkn-pac binaries for all platforms
@@ -58,16 +64,19 @@ RUN cd pac; \
       echo "▶ Building tkn-pac for linux/$arch"; \
       GOOS=linux GOARCH=$arch GOCACHE=$WORKDIR/.cache/go-build \
       go build -tags strictfipsruntime -mod=vendor -o $BUILD_DIR/linux-$arch/tkn-pac ./cmd/tkn-pac; \
+      go clean -cache -modcache; \
     done; \
     for arch in $DARWIN_ARCHS; do \
       echo "▶ Building tkn-pac for darwin/$arch"; \
       GOOS=darwin GOARCH=$arch GOCACHE=$WORKDIR/.cache/go-build \
       go build -tags strictfipsruntime -mod=vendor -o $BUILD_DIR/darwin-$arch/tkn-pac ./cmd/tkn-pac; \
+      go clean -cache -modcache; \
     done; \
     for arch in $WINDOWS_ARCHS; do \
       echo "▶ Building tkn-pac for windows/$arch"; \
       GOOS=windows GOARCH=$arch GOCACHE=$WORKDIR/.cache/go-build \
       go build -tags strictfipsruntime -mod=vendor -o $BUILD_DIR/windows-$arch/tkn-pac.exe ./cmd/tkn-pac; \
+      go clean -cache -modcache; \
     done;
 
 # Package all binaries in respective archives
