@@ -46,9 +46,13 @@ RUN for arch in $LINUX_ARCHS; do \
       chmod +x $BUILD_DIR/linux-$arch/*; \
       tar -C $BUILD_DIR/linux-$arch -czvf $WORKDIR/dist/tkn-linux-$arch.tar.gz .; \
       \
-      echo "  Cleaning up binaries..."; \
+      echo "  Cleaning up binaries and temp files..."; \
       rm -rf $BUILD_DIR/linux-$arch; \
+      rm -rf /tmp/go-build* || true; \
     done;
+
+# Clean up temp build artifacts before starting Darwin builds
+RUN rm -rf /tmp/go-build* $WORKDIR/.cache || true
 
 # Process Darwin/macOS architectures
 RUN for arch in $DARWIN_ARCHS; do \
@@ -76,9 +80,13 @@ RUN for arch in $DARWIN_ARCHS; do \
       chmod +x $BUILD_DIR/darwin-$arch/*; \
       tar -C $BUILD_DIR/darwin-$arch -czvf $WORKDIR/dist/tkn-macos-$arch.tar.gz .; \
       \
-      echo "  Cleaning up binaries..."; \
+      echo "  Cleaning up binaries and temp files..."; \
       rm -rf $BUILD_DIR/darwin-$arch; \
+      rm -rf /tmp/go-build* || true; \
     done;
+
+# Clean up temp build artifacts before starting Windows builds
+RUN rm -rf /tmp/go-build* $WORKDIR/.cache || true
 
 # Process Windows architectures
 RUN for arch in $WINDOWS_ARCHS; do \
@@ -106,8 +114,10 @@ RUN for arch in $WINDOWS_ARCHS; do \
       cd $BUILD_DIR/windows-$arch && \
       zip -r $WORKDIR/dist/tkn-windows-$arch.zip .; \
       \
-      echo "  Cleaning up binaries..."; \
+      echo "  Cleaning up binaries and temp files..."; \
+      cd $WORKDIR && \
       rm -rf $BUILD_DIR/windows-$arch; \
+      rm -rf /tmp/go-build* || true; \
     done;
 
 FROM $RUNTIME
