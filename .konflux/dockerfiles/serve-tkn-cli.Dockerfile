@@ -110,12 +110,10 @@ RUN for arch in $WINDOWS_ARCHS; do \
       go build -tags strictfipsruntime -mod=vendor -o $BUILD_DIR/windows-$arch/tkn-pac.exe ./cmd/tkn-pac; \
       go clean -cache -modcache; \
       \
-      echo "  Packaging tkn-windows-$arch.zip..."; \
-      cd $BUILD_DIR/windows-$arch && \
-      zip -r $WORKDIR/dist/tkn-windows-$arch.zip .; \
+      echo "  Packaging tkn-windows-$arch.tar.gz..."; \
+      tar -C $BUILD_DIR/windows-$arch -czvf $WORKDIR/dist/tkn-windows-$arch.tar.gz .; \
       \
       echo "  Cleaning up binaries and temp files..."; \
-      cd $WORKDIR && \
       rm -rf $BUILD_DIR/windows-$arch; \
       rm -rf /tmp/go-build* || true; \
     done;
