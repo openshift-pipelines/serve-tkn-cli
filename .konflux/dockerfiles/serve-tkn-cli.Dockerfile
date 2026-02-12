@@ -56,17 +56,18 @@ RUN mkdir -p /var/www/html/tkn
 COPY --from=builder /go/src/github.com/openshift-pipelines/serve-tkn-cli/dist/* /var/www/html/tkn/
 
 LABEL \
-      com.redhat.component="openshift-pipelines-serve-tkn-cli-container" \
-      name="openshift-pipelines/pipelines-serve-tkn-cli-rhel9" \
-      version="$VERSION" \
-      summary="Red Hat OpenShift pipelines serves tkn CLI binaries" \
+      com.redhat.component="openshift-serve-tkn-cli/pipelines-serve-tkn-cli-rhel9-container" \
+      cpe="cpe:/a:redhat:openshift_pipelines:1.22::el9" \
+      description="Red Hat OpenShift Pipelines serve-tkn-cli serve-tkn-cli" \
+      distribution-scope="public" \
+      io.k8s.description="Red Hat OpenShift Pipelines serve-tkn-cli serve-tkn-cli" \
+      io.k8s.display-name="Red Hat OpenShift Pipelines serve-tkn-cli serve-tkn-cli" \
+      io.openshift.tags="tekton,openshift,serve-tkn-cli,serve-tkn-cli" \
       maintainer="pipelines-extcomm@redhat.com" \
-      description="Serves tkn CLI binaries from server" \
-      io.k8s.display-name="Red Hat OpenShift Pipelines tkn CLI serve" \
-      io.k8s.description="Red Hat OpenShift Pipelines tkn CLI serve" \
-      io.openshift.tags="pipelines,tekton,openshift" \
+      name="openshift-pipelines/serve-tkn-cli/pipelines-serve-tkn-cli-rhel9" \
+      summary="Red Hat OpenShift Pipelines serve-tkn-cli serve-tkn-cli" \
       vendor="Red Hat, Inc." \
-      distribution-scope="public"
+      version="v1.22.0"
 
 CMD ["run-httpd"]
 
