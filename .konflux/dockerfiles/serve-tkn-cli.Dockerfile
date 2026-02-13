@@ -138,6 +138,6 @@ LABEL \
       io.openshift.tags="pipelines,tekton,openshift" \
       vendor="Red Hat, Inc." \
       distribution-scope="public" \
-      cpe="cpe:/a:redhat:openshift_pipelines:1.21::el9"
+      cpe="cpe:/a:redhat:openshift_pipelines:1.20::el9"
 
 CMD ["run-httpd"]
