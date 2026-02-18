@@ -10,41 +10,113 @@ ARG WORKDIR
 ARG BUILD_DIR
 
 WORKDIR $WORKDIR
-
 COPY sources ./
-ARG ARCHS="amd64 arm64 ppc64le s390x"
 
-#Build TKN Binaries for All Supported Archs
-RUN cd cli; \
-    for arch in $ARCHS; do \
-      echo "▶ Building tkn for linux/$arch"; \
-      GOOS=linux GOARCH=$arch CGO_ENABLED=0 GOCACHE=$WORKDIR/.cache/go-build  \
-      go build -mod=vendor -o $BUILD_DIR/linux-$arch/tkn ./cmd/tkn; \
-    done;
+# Define all architectures and platforms we need to build for
+ARG LINUX_ARCHS="amd64 arm64 ppc64le s390x"
+ARG DARWIN_ARCHS="amd64 arm64"
+ARG WINDOWS_ARCHS="amd64 arm64"
 
-#Build OPC Binaries for All Supported Archs
-RUN cd opc; \
-    for arch in $ARCHS; do \
-      echo "▶ Building opc for linux/$arch"; \
-      GOOS=linux GOARCH=$arch CGO_ENABLED=0 GOCACHE=$WORKDIR/.cache/go-build \
-      go build -mod=vendor -o $BUILD_DIR/linux-$arch/opc .; \
-    done;
+# Build and package per architecture to save disk space
+# Loop through each architecture, build all tools, package, then clean up binaries
+RUN mkdir -p dist
 
-#Build tkn-pac Binaries for All Supported Archs
-RUN cd pac; \
-    for arch in $ARCHS; do \
-      echo "▶ Building tkn-pac for linux/$arch"; \
-      GOOS=linux GOARCH=$arch CGO_ENABLED=0 \
-      go build -o $BUILD_DIR/linux-$arch/tkn-pac ./cmd/tkn-pac; \
-    done;
-
-#Package All binaries in respective archives
-RUN mkdir dist ; \
-    for arch in $ARCHS; do \
-      echo "▶ Packaging for linux/$arch"; \
+# Process Linux architectures
+RUN for arch in $LINUX_ARCHS; do \
+      echo "▶ Building and packaging for linux/$arch"; \
+      \
+      echo "  Building tkn..."; \
+      cd $WORKDIR/cli && \
+      GOOS=linux GOARCH=$arch GOCACHE=$WORKDIR/.cache/go-build \
+      go build -tags strictfipsruntime -mod=vendor -o $BUILD_DIR/linux-$arch/tkn ./cmd/tkn; \
+      go clean -cache -modcache; \
+      \
+      echo "  Building opc..."; \
+      cd $WORKDIR/opc && \
+      GOOS=linux GOARCH=$arch GOCACHE=$WORKDIR/.cache/go-build \
+      go build -tags strictfipsruntime -mod=vendor -o $BUILD_DIR/linux-$arch/opc .; \
+      go clean -cache -modcache; \
+      \
+      echo "  Building tkn-pac..."; \
+      cd $WORKDIR/pac && \
+      GOOS=linux GOARCH=$arch GOCACHE=$WORKDIR/.cache/go-build \
+      go build -tags strictfipsruntime -mod=vendor -o $BUILD_DIR/linux-$arch/tkn-pac ./cmd/tkn-pac; \
+      go clean -cache -modcache; \
+      \
+      echo "  Packaging tkn-linux-$arch.tar.gz..."; \
       chmod +x $BUILD_DIR/linux-$arch/*; \
-      cd $BUILD_DIR/linux-$arch && \
-      tar -czvf $WORKDIR/dist/tkn-linux-$arch.tar.gz .; \
+      tar -C $BUILD_DIR/linux-$arch -czvf $WORKDIR/dist/tkn-linux-$arch.tar.gz .; \
+      \
+      echo "  Cleaning up binaries and temp files..."; \
+      rm -rf $BUILD_DIR/linux-$arch; \
+      rm -rf /tmp/go-build* || true; \
+    done;
+
+# Clean up temp build artifacts before starting Darwin builds
+RUN rm -rf /tmp/go-build* $WORKDIR/.cache || true
+
+# Process Darwin/macOS architectures
+RUN for arch in $DARWIN_ARCHS; do \
+      echo "▶ Building and packaging for darwin/$arch"; \
+      \
+      echo "  Building tkn..."; \
+      cd $WORKDIR/cli && \
+      GOOS=darwin GOARCH=$arch GOCACHE=$WORKDIR/.cache/go-build \
+      go build -tags strictfipsruntime -mod=vendor -o $BUILD_DIR/darwin-$arch/tkn ./cmd/tkn; \
+      go clean -cache -modcache; \
+      \
+      echo "  Building opc..."; \
+      cd $WORKDIR/opc && \
+      GOOS=darwin GOARCH=$arch GOCACHE=$WORKDIR/.cache/go-build \
+      go build -tags strictfipsruntime -mod=vendor -o $BUILD_DIR/darwin-$arch/opc .; \
+      go clean -cache -modcache; \
+      \
+      echo "  Building tkn-pac..."; \
+      cd $WORKDIR/pac && \
+      GOOS=darwin GOARCH=$arch GOCACHE=$WORKDIR/.cache/go-build \
+      go build -tags strictfipsruntime -mod=vendor -o $BUILD_DIR/darwin-$arch/tkn-pac ./cmd/tkn-pac; \
+      go clean -cache -modcache; \
+      \
+      echo "  Packaging tkn-macos-$arch.tar.gz..."; \
+      chmod +x $BUILD_DIR/darwin-$arch/*; \
+      tar -C $BUILD_DIR/darwin-$arch -czvf $WORKDIR/dist/tkn-macos-$arch.tar.gz .; \
+      \
+      echo "  Cleaning up binaries and temp files..."; \
+      rm -rf $BUILD_DIR/darwin-$arch; \
+      rm -rf /tmp/go-build* || true; \
+    done;
+
+# Clean up temp build artifacts before starting Windows builds
+RUN rm -rf /tmp/go-build* $WORKDIR/.cache || true
+
+# Process Windows architectures
+RUN for arch in $WINDOWS_ARCHS; do \
+      echo "▶ Building and packaging for windows/$arch"; \
+      \
+      echo "  Building tkn..."; \
+      cd $WORKDIR/cli && \
+      GOOS=windows GOARCH=$arch GOCACHE=$WORKDIR/.cache/go-build \
+      go build -tags strictfipsruntime -mod=vendor -o $BUILD_DIR/windows-$arch/tkn.exe ./cmd/tkn; \
+      go clean -cache -modcache; \
+      \
+      echo "  Building opc..."; \
+      cd $WORKDIR/opc && \
+      GOOS=windows GOARCH=$arch GOCACHE=$WORKDIR/.cache/go-build \
+      go build -tags strictfipsruntime -mod=vendor -o $BUILD_DIR/windows-$arch/opc.exe .; \
+      go clean -cache -modcache; \
+      \
+      echo "  Building tkn-pac..."; \
+      cd $WORKDIR/pac && \
+      GOOS=windows GOARCH=$arch GOCACHE=$WORKDIR/.cache/go-build \
+      go build -tags strictfipsruntime -mod=vendor -o $BUILD_DIR/windows-$arch/tkn-pac.exe ./cmd/tkn-pac; \
+      go clean -cache -modcache; \
+      \
+      echo "  Packaging tkn-windows-$arch.tar.gz..."; \
+      tar -C $BUILD_DIR/windows-$arch -czvf $WORKDIR/dist/tkn-windows-$arch.tar.gz .; \
+      \
+      echo "  Cleaning up binaries and temp files..."; \
+      rm -rf $BUILD_DIR/windows-$arch; \
+      rm -rf /tmp/go-build* || true; \
     done;
 
 FROM $RUNTIME
@@ -69,5 +141,3 @@ LABEL \
       distribution-scope="public"
 
 CMD ["run-httpd"]
-
-# trigger rebuild 2026-02-14
