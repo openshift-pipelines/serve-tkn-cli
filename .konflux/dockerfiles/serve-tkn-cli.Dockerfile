@@ -1,4 +1,4 @@
-ARG BUILDER=registry.access.redhat.com/ubi9/go-toolset:9.7-1771271449@sha256:4c0a6ea209ccc5028c45d3fd886dd0f51e52a8917bceea15c759a2bd2598836f
+ARG BUILDER=registry.access.redhat.com/ubi9/go-toolset:9.7-1771417345@sha256:799cc027d5ad58cdc156b65286eb6389993ec14c496cf748c09834b7251e78dc
 ARG RUNTIME=registry.access.redhat.com/ubi9/httpd-24:latest@sha256:4b23e987ebb3a021d53c637805c5e10428e39e2ed252b7fad4fa51195604fb80
 
 ARG VERSION=serve-tkn-cli-1.20.3
