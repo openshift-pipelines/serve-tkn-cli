@@ -20,14 +20,14 @@ ARG VERSION=pipelines-as-code-cli-next
 COPY --from=builder /tmp/tkn-pac /usr/bin
 
 LABEL \
-      com.redhat.component="openshift-serve-tkn-cli/pipelines-tkn-pac-rhel9-container" \
+      com.redhat.component="openshift-pipelines-pipelines-as-code-cli-rhel9-container" \
       cpe="cpe:/a:redhat:openshift_pipelines:1.22::el9" \
       description="Red Hat OpenShift Pipelines serve-tkn-cli tkn-pac" \
       io.k8s.description="Red Hat OpenShift Pipelines serve-tkn-cli tkn-pac" \
       io.k8s.display-name="Red Hat OpenShift Pipelines serve-tkn-cli tkn-pac" \
       io.openshift.tags="tekton,openshift,serve-tkn-cli,tkn-pac" \
       maintainer="pipelines-extcomm@redhat.com" \
-      name="openshift-pipelines/serve-tkn-cli/pipelines-tkn-pac-rhel9" \
+      name="openshift-pipelines/pipelines-pipelines-as-code-cli-rhel9" \
       summary="Red Hat OpenShift Pipelines serve-tkn-cli tkn-pac" \
       version="v1.22.0"
 

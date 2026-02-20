@@ -17,13 +17,13 @@ RUN groupadd -r -g 65532 nonroot && useradd --no-log-init -r -u 65532 -g nonroot
 USER 65532
 
 LABEL \
-      com.redhat.component="openshift-serve-tkn-cli/pipelines-opc-rhel9-container" \
+      com.redhat.component="openshift-pipelines-opc-rhel9-container" \
       cpe="cpe:/a:redhat:openshift_pipelines:1.22::el9" \
       description="Red Hat OpenShift Pipelines serve-tkn-cli opc" \
       io.k8s.description="Red Hat OpenShift Pipelines serve-tkn-cli opc" \
       io.k8s.display-name="Red Hat OpenShift Pipelines serve-tkn-cli opc" \
       io.openshift.tags="tekton,openshift,serve-tkn-cli,opc" \
       maintainer="pipelines-extcomm@redhat.com" \
-      name="openshift-pipelines/serve-tkn-cli/pipelines-opc-rhel9" \
+      name="openshift-pipelines/pipelines-opc-rhel9" \
       summary="Red Hat OpenShift Pipelines serve-tkn-cli opc" \
       version="v1.22.0"
