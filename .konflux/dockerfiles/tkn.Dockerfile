@@ -4,7 +4,6 @@ ARG RUNTIME=registry.access.redhat.com/ubi9/ubi-minimal:latest@sha256:759f5f42d9
 FROM $GO_BUILDER AS builder
 
 ARG REMOTE_SOURCE=/go/src/github.com/tektoncd/cli
-ARG TKN_VERSION=0.43.0
 
 WORKDIR $REMOTE_SOURCE
 
