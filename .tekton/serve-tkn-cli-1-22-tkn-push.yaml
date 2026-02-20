@@ -23,7 +23,7 @@ spec:
   - name: revision
     value: '{{revision}}'
   - name: output-image
-    value: quay.io/redhat-user-workloads/tekton-ecosystem-tenant/serve-tkn-cli/pipelines-tkn-rhel9:{{revision}}
+    value: quay.io/redhat-user-workloads/tekton-ecosystem-tenant/pipelines-cli-tkn-rhel9:{{revision}}
   - name: build-platforms
     value:
     - linux/x86_64
