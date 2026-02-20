@@ -1,0 +1,36 @@
+ARG GO_BUILDER=registry.access.redhat.com/ubi9/go-toolset:9.7-1769430014@sha256:359dd4c6c4255b3f7bce4dc15ffa5a9aa65a401f819048466fa91baa8244a793
+ARG RUNTIME=registry.access.redhat.com/ubi9/ubi-minimal:latest@sha256:759f5f42d9d6ce2a705e290b7fc549e2d2cd39312c4fa345f93c02e4abb8da95
+
+FROM $GO_BUILDER AS builder
+
+ARG TKN_PAC_VERSION=nightly
+WORKDIR /go/src/github.com/openshift-pipelines/pipelines-as-code
+COPY sources/pac .
+
+ENV GODEBUG="http2server=0"
+ENV GOEXPERIMENT="strictfipsruntime"
+RUN TKN_PAC_VERSION=$(cat sources/pac/pkg/params/version/version.txt);  \
+    echo "Build TKN-TKN ($TKN_PAC_VERSION)" ;\
+    go build -mod=vendor -tags disable_gcp,strictfipsruntime -v  \
+    -ldflags "-X github.com/openshift-pipelines/pipelines-as-code/pkg/params/version.Version=${TKN_PAC_VERSION}" \
+    -o /tmp/tkn-pac ./cmd/tkn-pac
+
+FROM $RUNTIME
+ARG VERSION=pipelines-as-code-cli-next
+
+COPY --from=builder /tmp/tkn-pac /usr/bin
+
+LABEL \
+      com.redhat.component="openshift-pipelines-cli-tkn-pac-container" \
+      name="openshift-pipelines/pipelines-cli-tkn-pac-rhel9" \
+      version=$VERSION \
+      summary="Red Hat OpenShift pipelines tkn pac CLI" \
+      maintainer="pipelines-extcomm@redhat.com" \
+      description="CLI client 'tkn-pac' for managing openshift pipelines" \
+      io.k8s.display-name="Red Hat OpenShift Pipelines tkn pac CLI" \
+      io.k8s.description="Red Hat OpenShift Pipelines tkn pac CLI" \
+      io.openshift.tags="pipelines,tekton,openshift"
+
+RUN groupadd -r -g 65532 nonroot && \
+    useradd --no-log-init -r -u 65532 -g nonroot nonroot
+USER 65532
