@@ -4,11 +4,13 @@ ARG RUNTIME=registry.access.redhat.com/ubi9/ubi-minimal:latest@sha256:759f5f42d9
 FROM $GO_BUILDER AS builder
 
 WORKDIR /go/src/github.com/openshift-pipelines/pipelines-as-code
-COPY sources/pac .
+COPY sources/pac sources/pac
 
 ENV GODEBUG="http2server=0"
 ENV GOEXPERIMENT="strictfipsruntime"
-RUN TKN_PAC_VERSION=$(cat sources/pac/pkg/params/version/version.txt);  \
+RUN set -ex;\
+    cd sources/pac; \
+    TKN_PAC_VERSION=$(cat pkg/params/version/version.txt);  \
     echo "Build TKN-TKN ($TKN_PAC_VERSION)" ;\
     go build -mod=vendor -tags disable_gcp,strictfipsruntime -v  \
     -ldflags "-X github.com/openshift-pipelines/pipelines-as-code/pkg/params/version.Version=${TKN_PAC_VERSION}" \

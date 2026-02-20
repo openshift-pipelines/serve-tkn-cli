@@ -9,8 +9,7 @@ WORKDIR /go/src/github.com/openshift-pipelines/serve-tkn-cli
 COPY sources sources
 
 # Build logic using a single loop and BuildKit cache
-RUN --mount=type=cache,target=/root/.cache/go-build \
-    set -e; \
+RUN set -ex; \
     TKN_VER=$(cat sources/cli/VERSION);\
     PAC_VER=$(cat sources/pac/pkg/params/version/version.txt);  \
     echo "Define build matrix: GOOS/GOARCH/FILENAME_OS/EXTENSION";\
