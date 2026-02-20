@@ -1,5 +1,5 @@
 ARG BUILDER=registry.access.redhat.com/ubi9/go-toolset:9.7-1771271449@sha256:4c0a6ea209ccc5028c45d3fd886dd0f51e52a8917bceea15c759a2bd2598836f
-ARG RUNTIME=registry.redhat.io/rhel9/httpd-24@sha256:dbba6830bf41d3f85c83a46f288d3124b77295c54c62893739b457705c275bc8
+ARG RUNTIME=registry.redhat.io/rhel9/httpd-24@sha256:4b23e987ebb3a021d53c637805c5e10428e39e2ed252b7fad4fa51195604fb80
 
 FROM $BUILDER AS builder
 USER root
