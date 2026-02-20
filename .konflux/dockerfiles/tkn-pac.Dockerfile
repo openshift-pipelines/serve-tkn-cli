@@ -3,7 +3,6 @@ ARG RUNTIME=registry.access.redhat.com/ubi9/ubi-minimal:latest@sha256:759f5f42d9
 
 FROM $GO_BUILDER AS builder
 
-ARG TKN_PAC_VERSION=nightly
 WORKDIR /go/src/github.com/openshift-pipelines/pipelines-as-code
 COPY sources/pac .
 
