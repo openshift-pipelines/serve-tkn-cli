@@ -3,24 +3,31 @@ ARG RUNTIME=registry.access.redhat.com/ubi9/ubi-minimal:latest@sha256:759f5f42d9
 
 FROM $GO_BUILDER AS builder
 
-ARG REMOTE_SOURCE=/go/src/github.com/tektoncd/cli
+WORKDIR /go/src/github.com/tektoncd/cli
 
-WORKDIR $REMOTE_SOURCE
-
-COPY sources/cli .
+COPY sources/cli sources/cli
 
 ENV GODEBUG="http2server=0"
 ENV GOEXPERIMENT=strictfipsruntime
-RUN TKN_VERSION=$(cat VERSION);\
+
+# Build tkn from sources
+RUN set -ex;\
+    cd sources/cli; \
+    TKN_VERSION=$(cat VERSION);\
     echo "Build TKN ($TKN_VERSION)" ;\
-    go build -mod=vendor -tags disable_gcp,strictfipsruntime -v \
-       -ldflags "-X github.com/tektoncd/cli/pkg/cmd/version.clientVersion=${TKN_VERSION}" \
-       -o /tmp/tkn ./cmd/tkn
+    go build -mod=vendor -tags disable_gcp,strictfipsruntime \
+       -ldflags "-X github.com/tektoncd/cli/pkg/cmd/version.clientVersion=${TKN_VERSION} -s -w" \
+       -o /tmp/tkn ./cmd/tkn;
 
 # Build tkn-pac from sources
-COPY sources/pac $REMOTE_SOURCE/pac
-RUN cd $REMOTE_SOURCE/pac && \
-    go build -tags strictfipsruntime -mod=vendor -o /tmp/tkn-pac ./cmd/tkn-pac
+COPY sources/pac sources/pac
+RUN set -ex;\
+  cd sources/pac;\
+  PAC_VER=$(cat pkg/params/version/version.txt);  \
+  echo "Build TKN-PAC ($PAC_VER)";\
+  go build -mod=vendor -tags disable_gcp,strictfipsruntime \
+    -ldflags "-X github.com/openshift-pipelines/pipelines-as-code/pkg/params/version.Version=${PAC_VER} -s -w" \
+    -o /tmp/tkn-pac ./cmd/tkn-pac
 
 FROM $RUNTIME
 
