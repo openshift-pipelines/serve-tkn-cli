@@ -7,9 +7,13 @@ WORKDIR /go/src/github.com/openshift-pipelines/serve-tkn-cli
 
 # Copy source code
 COPY sources sources
+# Move caches away from the small /tmp partition
+ENV GOCACHE=/go/src/github.com/openshift-pipelines/serve-tkn-cli/.cache/go-build
+ENV GOTMPDIR=/go/src/github.com/openshift-pipelines/serve-tkn-cli/.cache/tmp
 
 # Build logic using a single loop and BuildKit cache
 RUN set -ex; \
+    mkdir -p $GOCACHE $GOTMPDIR ;\
     TKN_VER=$(cat sources/cli/VERSION);\
     PAC_VER=$(cat sources/pac/pkg/params/version/version.txt);  \
     echo "Define build matrix: GOOS/GOARCH/FILENAME_OS/EXTENSION";\
@@ -49,6 +53,7 @@ RUN set -ex; \
         -ldflags "-s -w" -o "$BUILD_DIR/opc$EXT" .); \
       \
       echo "Package and purge binaries to save space in the builder layer";\
+      go clean -cache -modcache; \
       tar -C "$BUILD_DIR" -czvf "dist/tkn-$OS_LABEL-$ARCH.tar.gz" .; \
       rm -rf "$BUILD_DIR"; \
     done
