@@ -27,6 +27,7 @@ RUN set -ex; \
                windows/arm64/windows/.exe"; \
     \
     for p in $PLATFORMS; do \
+      df -h ; \
       OS=$(echo $p | cut -d/ -f1); \
       ARCH=$(echo $p | cut -d/ -f2); \
       OS_LABEL=$(echo $p | cut -d/ -f3); \
