@@ -1,6 +1,6 @@
 ARG BUILDER=registry.access.redhat.com/ubi9/go-toolset:9.7-1772454089@sha256:b3b98e0b21ddbb979d968ca319b8eebdca121e30d58994072cbf99ce86e5d24e
 ARG RUNTIME=registry.redhat.io/rhel9/httpd-24@sha256:4b23e987ebb3a021d53c637805c5e10428e39e2ed252b7fad4fa51195604fb80
-ARG VERSION=5.0.5
+ARG VERSION=next
 ARG WORKDIR=/go/src/github.com/openshift-pipelines/serve-tkn-cli
 ARG BUILD_DIR=$WORKDIR/build
 
@@ -127,17 +127,17 @@ RUN mkdir -p /var/www/html/tkn
 COPY --from=builder /go/src/github.com/openshift-pipelines/serve-tkn-cli/dist/* /var/www/html/tkn/
 
 LABEL \
-      com.redhat.component="openshift-pipelines-serve-tkn-cli-rhel9-container" \
-      cpe="cpe:/a:redhat:openshift_pipelines:next::el9" \
-      description="Red Hat OpenShift Pipelines serve-tkn-cli serve-tkn-cli" \
-      distribution-scope="public" \
-      io.k8s.description="Red Hat OpenShift Pipelines serve-tkn-cli serve-tkn-cli" \
-      io.k8s.display-name="Red Hat OpenShift Pipelines serve-tkn-cli serve-tkn-cli" \
-      io.openshift.tags="tekton,openshift,serve-tkn-cli,serve-tkn-cli" \
-      maintainer="pipelines-extcomm@redhat.com" \
-      name="openshift-pipelines/pipelines-serve-tkn-cli-rhel9" \
-      summary="Red Hat OpenShift Pipelines serve-tkn-cli serve-tkn-cli" \
-      vendor="Red Hat, Inc." \
-      version="next"
+    com.redhat.component="openshift-pipelines-serve-tkn-cli-rhel9-container" \
+    cpe="cpe:/a:redhat:openshift_pipelines:next::el9" \
+    description="Red Hat OpenShift Pipelines serve-tkn-cli serve-tkn-cli" \
+    distribution-scope="public" \
+    io.k8s.description="Red Hat OpenShift Pipelines serve-tkn-cli serve-tkn-cli" \
+    io.k8s.display-name="Red Hat OpenShift Pipelines serve-tkn-cli serve-tkn-cli" \
+    io.openshift.tags="tekton,openshift,serve-tkn-cli,serve-tkn-cli" \
+    maintainer="pipelines-extcomm@redhat.com" \
+    name="openshift-pipelines/pipelines-serve-tkn-cli-rhel9" \
+    summary="Red Hat OpenShift Pipelines serve-tkn-cli serve-tkn-cli" \
+    vendor="Red Hat, Inc." \
+    version="next"
 
 CMD ["run-httpd"]
