@@ -1,6 +1,6 @@
 ARG BUILDER=registry.access.redhat.com/ubi9/go-toolset:9.7-1769430014@sha256:359dd4c6c4255b3f7bce4dc15ffa5a9aa65a401f819048466fa91baa8244a793
 ARG RUNTIME=registry.redhat.io/rhel9/httpd-24@sha256:47a0b3f12211320d1828524a324ab3ec9deac97c17b9d3f056c87d3384d9eb79
-ARG VERSION=5.0.5
+ARG VERSION=1.18
 ARG WORKDIR=/go/src/github.com/openshift-pipelines/serve-tkn-cli
 ARG BUILD_DIR=$WORKDIR/build
 
@@ -127,17 +127,17 @@ RUN mkdir -p /var/www/html/tkn
 COPY --from=builder /go/src/github.com/openshift-pipelines/serve-tkn-cli/dist/* /var/www/html/tkn/
 
 LABEL \
-      com.redhat.component="openshift-pipelines-serve-tkn-cli-rhel9-container" \
-      cpe="cpe:/a:redhat:openshift_pipelines:1.18::el9" \
-      description="Red Hat OpenShift Pipelines serve-tkn-cli serve-tkn-cli" \
-      distribution-scope="public" \
-      io.k8s.description="Red Hat OpenShift Pipelines serve-tkn-cli serve-tkn-cli" \
-      io.k8s.display-name="Red Hat OpenShift Pipelines serve-tkn-cli serve-tkn-cli" \
-      io.openshift.tags="tekton,openshift,serve-tkn-cli,serve-tkn-cli" \
-      maintainer="pipelines-extcomm@redhat.com" \
-      name="openshift-pipelines/pipelines-serve-tkn-cli-rhel9" \
-      summary="Red Hat OpenShift Pipelines serve-tkn-cli serve-tkn-cli" \
-      vendor="Red Hat, Inc." \
-      version="v1.18.0"
+    com.redhat.component="openshift-pipelines-serve-tkn-cli-rhel9-container" \
+    cpe="cpe:/a:redhat:openshift_pipelines:1.18::el9" \
+    description="Red Hat OpenShift Pipelines serve-tkn-cli serve-tkn-cli" \
+    distribution-scope="public" \
+    io.k8s.description="Red Hat OpenShift Pipelines serve-tkn-cli serve-tkn-cli" \
+    io.k8s.display-name="Red Hat OpenShift Pipelines serve-tkn-cli serve-tkn-cli" \
+    io.openshift.tags="tekton,openshift,serve-tkn-cli,serve-tkn-cli" \
+    maintainer="pipelines-extcomm@redhat.com" \
+    name="openshift-pipelines/pipelines-serve-tkn-cli-rhel9" \
+    summary="Red Hat OpenShift Pipelines serve-tkn-cli serve-tkn-cli" \
+    vendor="Red Hat, Inc." \
+    version="v1.18.0"
 
 CMD ["run-httpd"]
