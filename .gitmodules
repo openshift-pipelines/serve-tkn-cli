@@ -1,12 +1,12 @@
 [submodule "sources/cli"]
 	path = sources/cli
 	url = https://github.com/tektoncd/cli.git
-	branch = release-v0.43.0
+	branch = release-v0.44.0
 [submodule "sources/opc"]
 	path = sources/opc
 	url = https://github.com/openshift-pipelines/opc.git
 	branch = release-v1.22.x
 [submodule "sources/pac"]
 	path = sources/pac
-	url = https://github.com/openshift-pipelines/pipelines-as-code.git
-	branch = release-v0.41.x
+	url = https://github.com/tektoncd/pipelines-as-code.git
+	branch = release-v0.42.x
