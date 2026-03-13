@@ -15,7 +15,7 @@ ENV GOTMPDIR=/go/src/github.com/openshift-pipelines/serve-tkn-cli/.cache/tmp
 RUN set -ex; \
     mkdir -p $GOCACHE $GOTMPDIR ;\
     TKN_VER=$(cat sources/cli/VERSION);\
-    PAC_VER=$(cat sources/pac/pkg/params/version/version.txt);  \
+    PAC_VER=$(cat sources/pac/pkg/params/versiondata/version.txt);  \
     echo "Define build matrix: GOOS/GOARCH/FILENAME_OS/EXTENSION";\
     PLATFORMS="linux/amd64/linux/ \
                linux/arm64/linux/ \
@@ -41,7 +41,7 @@ RUN set -ex; \
       \
       echo "Build TKN ($TKN_VER)" ;\
       (cd sources/cli && GOOS=$OS GOARCH=$ARCH go build -tags strictfipsruntime -mod=vendor \
-        -ldflags "-X github.com/tektoncd/cli/pkg/cmd/version.clientVersion=${TKN_VER} -s -w" \
+        -ldflags "-X github.com/tektoncd/cli/pkg/cmd/versiondata.clientVersion=${TKN_VER} -s -w" \
         -o "$BUILD_DIR/tkn$EXT" ./cmd/tkn); \
       \
       echo "Build TKN-PAC ($PAC_VER)";\
