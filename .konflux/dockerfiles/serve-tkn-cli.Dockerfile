@@ -1,4 +1,4 @@
-ARG GO_BUILDER=registry.access.redhat.com/ubi9/go-toolset:9.7-1772454089@sha256:b3b98e0b21ddbb979d968ca319b8eebdca121e30d58994072cbf99ce86e5d24e
+ARG GO_BUILDER=registry.access.redhat.com/ubi9/go-toolset:1.25
 ARG HTTPD_RUNTIME=registry.redhat.io/rhel9/httpd-24@sha256:4b23e987ebb3a021d53c637805c5e10428e39e2ed252b7fad4fa51195604fb80
 
 FROM $GO_BUILDER AS builder
@@ -66,7 +66,7 @@ COPY --from=builder /go/src/github.com/openshift-pipelines/serve-tkn-cli/dist/*.
 
 LABEL \
     com.redhat.component="openshift-pipelines-serve-tkn-cli-rhel9-container" \
-    cpe="cpe:/a:redhat:openshift_pipelines:1.22::el9" \
+    cpe="cpe:/a:redhat:openshift_pipelines:next::el9" \
     description="Red Hat OpenShift Pipelines serve-tkn-cli serve-tkn-cli" \
     distribution-scope="public" \
     io.k8s.description="Red Hat OpenShift Pipelines serve-tkn-cli serve-tkn-cli" \
@@ -76,6 +76,6 @@ LABEL \
     name="openshift-pipelines/pipelines-serve-tkn-cli-rhel9" \
     summary="Red Hat OpenShift Pipelines serve-tkn-cli serve-tkn-cli" \
     vendor="Red Hat, Inc." \
-    version="v1.22.0"
+    version="next"
 
 CMD ["run-httpd"]
