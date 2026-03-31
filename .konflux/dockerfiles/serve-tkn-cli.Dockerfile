@@ -1,7 +1,7 @@
-ARG BUILDER=registry.access.redhat.com/ubi9/go-toolset:9.7-1772454089@sha256:b3b98e0b21ddbb979d968ca319b8eebdca121e30d58994072cbf99ce86e5d24e
-ARG RUNTIME=registry.redhat.io/rhel9/httpd-24@sha256:4b23e987ebb3a021d53c637805c5e10428e39e2ed252b7fad4fa51195604fb80
+ARG GO_BUILDER=registry.access.redhat.com/ubi9/go-toolset:9.7-1772454089@sha256:b3b98e0b21ddbb979d968ca319b8eebdca121e30d58994072cbf99ce86e5d24e
+ARG HTTPD_RUNTIME=registry.redhat.io/rhel9/httpd-24@sha256:4b23e987ebb3a021d53c637805c5e10428e39e2ed252b7fad4fa51195604fb80
 
-FROM $BUILDER AS builder
+FROM $GO_BUILDER AS builder
 USER root
 WORKDIR /go/src/github.com/openshift-pipelines/serve-tkn-cli
 
@@ -41,12 +41,12 @@ RUN set -ex; \
       \
       echo "Build TKN ($TKN_VER)" ;\
       (cd sources/cli && GOOS=$OS GOARCH=$ARCH go build -tags strictfipsruntime -mod=vendor \
-        -ldflags "-X github.com/tektoncd/cli/pkg/cmd/versiondata.clientVersion=${TKN_VER} -s -w" \
+        -ldflags "-X github.com/tektoncd/cli/pkg/cmd/version.clientVersion=${TKN_VER} -s -w" \
         -o "$BUILD_DIR/tkn$EXT" ./cmd/tkn); \
       \
       echo "Build TKN-PAC ($PAC_VER)";\
       (cd sources/pac && GOOS=$OS GOARCH=$ARCH go build -tags strictfipsruntime -mod=vendor \
-        -ldflags "-X github.com/openshift-pipelines/pipelines-as-code/pkg/params/version.Version=${PAC_VER} -s -w" \
+        -ldflags "-X github.com/tektoncd/pipelines-as-code/pkg/params/version.Version=${PAC_VER} -s -w" \
         -o "$BUILD_DIR/tkn-pac$EXT" ./cmd/tkn-pac); \
       \
       echo "Build OPC (opc module)";\
@@ -59,7 +59,7 @@ RUN set -ex; \
       rm -rf "$BUILD_DIR"; \
     done
 
-FROM $RUNTIME
+FROM $HTTPD_RUNTIME
 
 # Copy only the final tarballs
 COPY --from=builder /go/src/github.com/openshift-pipelines/serve-tkn-cli/dist/*.tar.gz /var/www/html/tkn/
