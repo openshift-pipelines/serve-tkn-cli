@@ -61,6 +61,11 @@ RUN set -ex; \
 
 FROM $HTTPD_RUNTIME
 
+# Remove the default Apache SSL virtual host shipped by rhel9/httpd-24.
+# tkn-cli-serve only needs port 8080 — TLS is terminated at the
+# OpenShift edge router. Port 8443 is unused and should not be exposed.
+RUN rm -f /etc/httpd/conf.d/ssl.conf
+
 # Copy only the final tarballs
 COPY --from=builder /go/src/github.com/openshift-pipelines/serve-tkn-cli/dist/*.tar.gz /var/www/html/tkn/
 
