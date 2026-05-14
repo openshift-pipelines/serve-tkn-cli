@@ -14,7 +14,7 @@ ENV GOTMPDIR=/go/src/github.com/openshift-pipelines/serve-tkn-cli/.cache/tmp
 # Build logic using a single loop and BuildKit cache
 RUN set -ex; \
     mkdir -p $GOCACHE $GOTMPDIR ;\
-    TKN_VER=$(cat sources/cli/VERSION);\
+    TKN_VER=$(cat sources/cli/VERSION 2>/dev/null || echo "nightly");\
     PAC_VER=$(cat sources/pac/pkg/params/versiondata/version.txt);  \
     echo "Define build matrix: GOOS/GOARCH/FILENAME_OS/EXTENSION";\
     PLATFORMS="linux/amd64/linux/ \
