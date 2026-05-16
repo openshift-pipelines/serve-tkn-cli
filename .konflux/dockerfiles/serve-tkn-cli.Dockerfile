@@ -1,4 +1,4 @@
-ARG BUILDER=registry.access.redhat.com/ubi9/go-toolset:9.7-1769430014@sha256:359dd4c6c4255b3f7bce4dc15ffa5a9aa65a401f819048466fa91baa8244a793
+ARG BUILDER=registry.access.redhat.com/ubi9/go-toolset:9.7-1778675823@sha256:90a36bc2013b3fcb28e2a4b082c9b895d7c2c679e58b95aed9721970f3339d0e
 ARG RUNTIME=registry.redhat.io/rhel9/httpd-24@sha256:f5ebf4b1a0bdade317f441f1cc2e7a5bc62591c7c483ea1b952736e44c8c1e9b
 ARG VERSION=1.18
 ARG WORKDIR=/go/src/github.com/openshift-pipelines/serve-tkn-cli
