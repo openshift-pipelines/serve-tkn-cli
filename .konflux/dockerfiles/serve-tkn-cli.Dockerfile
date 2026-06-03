@@ -72,7 +72,7 @@ RUN echo "# SSL VirtualHost removed - TLS handled by OpenShift router" > /etc/ht
 COPY --from=builder /go/src/github.com/openshift-pipelines/serve-tkn-cli/dist/*.tar.gz /var/www/html/tkn/
 
 LABEL \
-    com.redhat.component="openshift-pipelines-serve-tkn-cli-rhel9-container" \
+    com.redhat.component="openshift-pipelines-serve-tkn-cli-rhel10-container" \
     cpe="cpe:/a:redhat:openshift_pipelines:nightly::el9" \
     description="Red Hat OpenShift Pipelines serve-tkn-cli serve-tkn-cli" \
     distribution-scope="public" \
@@ -80,9 +80,9 @@ LABEL \
     io.k8s.display-name="Red Hat OpenShift Pipelines serve-tkn-cli serve-tkn-cli" \
     io.openshift.tags="tekton,openshift,serve-tkn-cli,serve-tkn-cli" \
     maintainer="pipelines-extcomm@redhat.com" \
-    name="openshift-pipelines/pipelines-serve-tkn-cli-rhel9" \
+    name="openshift-pipelines/pipelines-serve-tkn-cli-rhel10" \
     summary="Red Hat OpenShift Pipelines serve-tkn-cli serve-tkn-cli" \
     vendor="Red Hat, Inc." \
-    version="latest"
+    version="nightly"
 
 CMD ["run-httpd"]
