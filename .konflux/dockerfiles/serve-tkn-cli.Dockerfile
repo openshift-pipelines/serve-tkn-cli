@@ -73,7 +73,7 @@ COPY --from=builder /go/src/github.com/openshift-pipelines/serve-tkn-cli/dist/*.
 
 LABEL \
     com.redhat.component="openshift-pipelines-serve-tkn-cli-rhel9-container" \
-    cpe="cpe:/a:redhat:openshift_pipelines:next::el9" \
+    cpe="cpe:/a:redhat:openshift_pipelines:next::" \
     description="Red Hat OpenShift Pipelines serve-tkn-cli serve-tkn-cli" \
     distribution-scope="public" \
     io.k8s.description="Red Hat OpenShift Pipelines serve-tkn-cli serve-tkn-cli" \
