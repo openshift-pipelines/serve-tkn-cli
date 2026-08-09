@@ -1,4 +1,4 @@
-ARG GO_BUILDER=registry.access.redhat.com/ubi9/go-toolset:9.8-1781757851
+ARG GO_BUILDER=registry.access.redhat.com/ubi9/go-toolset:latest
 ARG HTTPD_RUNTIME=registry.redhat.io/rhel9/httpd-24@sha256:214491036986adfa0ccbd421361b78d4ca281f74fe3be2730f29ad9cba2a7e74
 
 FROM $GO_BUILDER AS builder
@@ -76,6 +76,6 @@ LABEL \
     name="openshift-pipelines/pipelines-serve-tkn-cli-rhel9" \
     summary="Red Hat OpenShift Pipelines serve-tkn-cli serve-tkn-cli" \
     vendor="Red Hat, Inc." \
-    version="v1.24.0"
+    version="v1.24.0-RC-1"
 
 CMD ["run-httpd"]
