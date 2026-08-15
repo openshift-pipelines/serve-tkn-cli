@@ -1,5 +1,5 @@
 ARG GO_BUILDER=registry.access.redhat.com/ubi9/go-toolset:latest
-ARG HTTPD_RUNTIME=registry.redhat.io/rhel9/httpd-24@sha256:214491036986adfa0ccbd421361b78d4ca281f74fe3be2730f29ad9cba2a7e74
+ARG HTTPD_RUNTIME=registry.redhat.io/rhel9/httpd-24@sha256:fbd88338aeaa3f660d407d83752de1c7bd4bae5053641f6abe78add458cafdbc
 
 FROM $GO_BUILDER AS builder
 USER root
