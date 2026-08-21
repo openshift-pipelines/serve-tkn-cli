@@ -1,0 +1,154 @@
+name: Update Submodules
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Specific branch to update (leave empty for all release branches)'
+        required: false
+        type: string
+  schedule:
+    - cron: '0 0 * * 4'  # Every Thursday at 00:00 UTC
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  collect-branches:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Determine branches to process
+        id: set-matrix
+        run: |
+          set -euo pipefail
+
+          if [ -n "${{ inputs.branch }}" ]; then
+            # Single branch specified
+            echo "Processing single branch: ${{ inputs.branch }}"
+            json=$(jq -nc --arg branch "${{ inputs.branch }}" '{branch: [$branch]}')
+          else
+            # Use git ls-remote (faster, no API rate limits, no auth needed)
+            echo "Discovering release branches..."
+            branches=$(git ls-remote --heads https://github.com/${{ github.repository }}.git 'refs/heads/release-v*.x' | \
+              awk '{print $2}' | \
+              sed 's|refs/heads/||' | \
+              sort -V)
+
+            if [ -z "$branches" ]; then
+              echo "No release branches found"
+              json='{"branch":[]}'
+            else
+              echo "Found branches:"
+              echo "$branches"
+              json=$(printf '%s\n' "$branches" | jq -R . | jq -sc '{branch: .}')
+            fi
+          fi
+
+          echo "matrix=$json" >> $GITHUB_OUTPUT
+
+  update-submodules:
+    needs: collect-branches
+    if: needs.collect-branches.outputs.matrix != '{"branch":[]}'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 5  # Limit parallel jobs to avoid overwhelming resources
+      matrix: ${{ fromJSON(needs.collect-branches.outputs.matrix) }}
+
+    steps:
+      - name: Checkout ${{ matrix.branch }}
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.branch }}
+          submodules: false  # Don't checkout submodules initially (we'll update them)
+          fetch-depth: 1
+
+      - name: Update submodules
+        id: update
+        run: |
+          set -euo pipefail
+
+          # Configure git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Capture state before update
+          git submodule status | sort > /tmp/before.txt
+
+          # Update all submodules to latest commits on their tracked branches
+          git submodule update --init --remote --force --checkout
+
+          # Capture state after update
+          git submodule status | sort > /tmp/after.txt
+
+          # Check for changes
+          if cmp -s /tmp/before.txt /tmp/after.txt; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "has_changes=true" >> $GITHUB_OUTPUT
+
+          # Generate detailed change summary
+          {
+            echo "### Submodule Updates"
+            echo ""
+            echo "| Submodule | Change |"
+            echo "|-----------|--------|"
+
+            # Compare and show changes
+            while IFS= read -r line; do
+              submodule=$(echo "$line" | awk '{print $2}')
+              old_commit=$(echo "$line" | awk '{print $1}' | tr -d '+-')
+
+              new_line=$(grep " $submodule " /tmp/after.txt || echo "")
+              if [ -n "$new_line" ]; then
+                new_commit=$(echo "$new_line" | awk '{print $1}' | tr -d '+-')
+
+                if [ "$old_commit" != "$new_commit" ]; then
+                  short_old=$(echo "$old_commit" | cut -c1-7)
+                  short_new=$(echo "$new_commit" | cut -c1-7)
+                  echo "| \`$submodule\` | \`$short_old\` → \`$short_new\` |"
+                fi
+              fi
+            done < /tmp/before.txt
+          } | tee /tmp/changes.md
+
+          # Set output
+          {
+            echo "changes<<EOF"
+            cat /tmp/changes.md
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
+
+      - name: Create Pull Request
+        if: steps.update.outputs.has_changes == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: 'chore: update submodules'
+          branch: update-submodules-${{ matrix.branch }}-${{ github.run_number }}
+          delete-branch: true
+          base: ${{ matrix.branch }}
+          title: 'chore: update submodules'
+          body: |
+            ## Submodule Updates for `${{ matrix.branch }}`
+
+            ${{ steps.update.outputs.changes }}
+
+            <details>
+            <summary>Submodules tracked</summary>
+
+            - `sources/cli` → tektoncd/cli
+            - `sources/opc` → openshift-pipelines/opc
+            - `sources/pac` → tektoncd/pipelines-as-code
+
+            </details>
+
+            ---
+            🤖 Generated by [workflow](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          labels: |
+            dependencies
+            automated
