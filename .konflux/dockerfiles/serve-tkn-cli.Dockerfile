@@ -7,6 +7,10 @@ WORKDIR /go/src/github.com/openshift-pipelines/serve-tkn-cli
 
 # Copy source code
 COPY sources sources
+
+COPY .konflux/patches patches/
+RUN set -e; for f in patches/*.patch; do echo ${f}; [[ -f ${f} ]] || continue; git apply ${f}; done
+
 # Move caches away from the small /tmp partition
 ENV GOCACHE=/go/src/github.com/openshift-pipelines/serve-tkn-cli/.cache/go-build
 ENV GOTMPDIR=/go/src/github.com/openshift-pipelines/serve-tkn-cli/.cache/tmp
