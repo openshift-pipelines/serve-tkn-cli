@@ -1,0 +1,10 @@
+diff --git a/sources/cli/go.mod b/sources/cli/go.mod
+--- a/sources/cli/go.mod
++++ b/sources/cli/go.mod
+@@ -1,5 +1,5 @@
+ module github.com/tektoncd/cli
+ 
+-go 1.26.6
++go 1.26.5
+ 
+ require (
