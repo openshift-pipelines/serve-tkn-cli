@@ -1,0 +1,10 @@
+diff --git a/sources/pac/go.mod b/sources/pac/go.mod
+--- a/sources/pac/go.mod
++++ b/sources/pac/go.mod
+@@ -1,5 +1,5 @@
+ module github.com/openshift-pipelines/pipelines-as-code
+ 
+-go 1.26.6
++go 1.26.5
+ 
+ require (
