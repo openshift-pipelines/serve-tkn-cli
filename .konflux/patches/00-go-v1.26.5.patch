@@ -1,5 +1,5 @@
 diff --git a/sources/pac/go.mod b/sources/pac/go.mod
-index 4b13c82..01cd8ba 100644
+index f1018ad..2943e24 100644
 --- a/sources/pac/go.mod
 +++ b/sources/pac/go.mod
 @@ -1,6 +1,6 @@
