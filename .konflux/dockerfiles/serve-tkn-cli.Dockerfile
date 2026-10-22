@@ -1,5 +1,5 @@
 ARG BUILDER=registry.access.redhat.com/ubi8/go-toolset:latest
-ARG RUNTIME=registry.redhat.io/ubi8/httpd-24@sha256:eaaf582966cc5ba11d8ad171a8f09b700abd55798221a2db0368c117135beb4c
+ARG RUNTIME=registry.redhat.io/ubi8/httpd-24@sha256:c4c285d42941ebb2bd4da878479008e1e4536bb599aad1dbe568f89de9053661
 
 FROM $BUILDER AS builder
 USER root
