@@ -58,19 +58,14 @@ RUN set -ex; \
       \
       echo "Package and purge binaries to save space in the builder layer";\
       go clean -cache -modcache; \
-      if [ "$OS" = "windows" ]; then \
-        (cd "$BUILD_DIR" && zip -r "../tkn-$OS_LABEL-$ARCH.zip" .); \
-      else \
-        tar -C "$BUILD_DIR" -czvf "dist/tkn-$OS_LABEL-$ARCH.tar.gz" .; \
-      fi; \
+      tar -C "$BUILD_DIR" -czvf "dist/tkn-$OS_LABEL-$ARCH.tar.gz" .; \
       rm -rf "$BUILD_DIR"; \
     done
 
 FROM $HTTPD_RUNTIME
 
-# Copy only the final tarballs and zip files
+# Copy only the final tarballs
 COPY --from=builder /go/src/github.com/openshift-pipelines/serve-tkn-cli/dist/*.tar.gz /var/www/html/tkn/
-COPY --from=builder /go/src/github.com/openshift-pipelines/serve-tkn-cli/dist/*.zip /var/www/html/tkn/
 
 LABEL \
     com.redhat.component="openshift-pipelines-serve-tkn-cli-rhel9-container" \
