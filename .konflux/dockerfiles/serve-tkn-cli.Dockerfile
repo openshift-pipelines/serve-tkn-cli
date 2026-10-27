@@ -60,9 +60,8 @@ RUN set -ex; \
       go clean -cache -modcache; \
       if [ "$OS" = "windows" ]; then \
         (cd "$BUILD_DIR" && zip -r "../tkn-$OS_LABEL-$ARCH.zip" .); \
-      else \
-        tar -C "$BUILD_DIR" -czvf "dist/tkn-$OS_LABEL-$ARCH.tar.gz" .; \
       fi; \
+      tar -C "$BUILD_DIR" -czvf "dist/tkn-$OS_LABEL-$ARCH.tar.gz" .; \
       rm -rf "$BUILD_DIR"; \
     done
 
