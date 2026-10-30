@@ -83,6 +83,6 @@ LABEL \
     name="openshift-pipelines/pipelines-serve-tkn-cli-rhel9" \
     summary="Red Hat OpenShift Pipelines serve-tkn-cli serve-tkn-cli" \
     vendor="Red Hat, Inc." \
-    version="v1.24.2"
+    version="v1.24.3"
 
 CMD ["run-httpd"]
