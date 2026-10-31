@@ -12,8 +12,8 @@ metadata:
     pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch
       == "next" &&
       ("***".pathChanged() ||
-      ".konflux/dockerfiles/serve-tkn-cli.Dockerfile".pathChanged() ||
-      ".tekton/serve-tkn-cli-next-serve-tkn-cli-push.yaml".pathChanged())
+      ".konflux/dockerfiles/***".pathChanged() ||
+      ".tekton/***".pathChanged())
   creationTimestamp: null
   labels:
     appstudio.openshift.io/application: openshift-pipelines-core-next
